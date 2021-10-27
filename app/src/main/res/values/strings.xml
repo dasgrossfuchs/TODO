@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TodoTest</string>
+    <string name="addElementString">+</string>
+</resources>
