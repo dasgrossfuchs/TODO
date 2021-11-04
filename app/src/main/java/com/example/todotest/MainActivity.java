@@ -17,7 +17,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private Button mAddButton;
     private RecyclerView mRv;
-    private RecyclerView.Adapter mAdapter_rv;
+ //   private RecyclerView.Adapter mAdapter_rv;
+    private ExampleAdapter mAdapter_rv;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<todo_groups> mListaGrupos;
     private ArrayList<elemento> mListaElementos;
@@ -69,32 +70,12 @@ public class MainActivity extends AppCompatActivity {
 
         mListaGrupos.add( new todo_groups( "Pendientes",0 ) );
         mListaGrupos.add( new todo_groups( "Lista 2",1) );
-        mListaGrupos.add( new todo_groups( "Lista 2",2) );
-        mListaGrupos.add( new todo_groups( "Lista 2",3) );
-        mListaGrupos.add( new todo_groups( "Lista 2",4) );
+        mListaGrupos.add( new todo_groups( "Lista 3",2) );
+        mListaGrupos.add( new todo_groups( "Lista 4",3) );
+        mListaGrupos.add( new todo_groups( "Lista 5",4) );
         ts = new TodoSorter(mListaElementos,mListaGrupos);
         mListaGrupos = ts.getListaGrupo();
     }
-
-    // TODO BORRAR SI INNECESARIO
-//    public void addItem(@NonNull elemento e){
-//        if(e.isEstado()){
-//            mListaGrupos.get(e.getGroup()).additemLista_checked(e);
-//        }
-//        else{mListaGrupos.get(e.getGroup()).additemLista_unchecked(e);}
-//    }
-//    public void addItem(int index, @NonNull elemento e){
-//        if(e.isEstado()){
-//            mListaGrupos.get(e.getGroup()).additemLista_checked(e,index);
-//        }
-//        else{mListaGrupos.get(e.getGroup()).additemLista_unchecked(e,index);}
-//    }
-//    public void removeItem(int index,int grupo, boolean estado){
-//        if(estado){
-//        mListaGrupos.get(grupo).removeitemLista_checked(index);
-//        }
-//        else{mListaGrupos.get(grupo).removeitemLista_unchecked(index);}
-//    }
 
     public void buildRecyclerView(){
         mRv = findViewById( R.id.recyclerView_todogroups );
@@ -103,6 +84,19 @@ public class MainActivity extends AppCompatActivity {
         mAdapter_rv = new ExampleAdapter( mListaGrupos );
         mRv.setLayoutManager( mLayoutManager );
         mRv.setAdapter( mAdapter_rv );
+        mAdapter_rv.setOnItemClickListener(new ExampleAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(int position) {
+                // EVENTO CLICK A GRUPO
+                changeItem(position,"this is new :)");
+            }
+        });
+    }
+    public void changeItem(int position, String txt){
+        mListaGrupos.get(position).setTitulo_grupo(txt);
+        Logger("Changed TO : " + mListaGrupos.get(position) +" " );
+        mAdapter_rv.notifyItemChanged(position);
+        Logger("END CHANGE!!!");
     }
     public void Logger(String s){
         Log.d("GAY",s);

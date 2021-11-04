@@ -14,7 +14,6 @@ import java.util.ArrayList;
 public class Adapter_item_check extends RecyclerView.Adapter<Adapter_item_check.ItemViewHolder> {
     private ArrayList<elemento> mElementos;
 
-
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
         public TextView mTextView_todoitem;
         public CheckBox mCheckBox_estadoTodoItem;

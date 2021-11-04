@@ -78,6 +78,7 @@ public class todo_groups {
         actualizarOrden();
 
     }
+
     public void additemLista_unchecked(elemento ele, int toindex){
         mListaEl_unchecked.add( toindex,ele );
         actualizarOrden();

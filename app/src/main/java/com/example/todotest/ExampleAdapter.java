@@ -21,6 +21,17 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     public ArrayList<elemento> mElementos_Checked;
     private ArrayList<todo_groups> mGrupos;
 
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener{
+        void OnItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        mListener =listener;
+    }
+
+
     public static class ExampleViewHolder extends RecyclerView.ViewHolder{
         // Por grupo
         public TextView mTextView_todogroupTitle;
@@ -29,16 +40,16 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         public TextView mTextView_realizadas;
 
         // por lista
-        private RecyclerView.Adapter mAdapter_rv;
+        private Adapter_item mAdapter_rv;
         public RecyclerView mRv;
         public RecyclerView.LayoutManager mLayoutManager;
-        private RecyclerView.Adapter mAdapter_rv_checked;
+        private Adapter_item_check mAdapter_rv_checked;
         public RecyclerView mRv_checked;
         public RecyclerView.LayoutManager mLayoutManager_checked;
 
 
 
-        public ExampleViewHolder(View itemView) {
+        public ExampleViewHolder(View itemView, OnItemClickListener listener) {
             super( itemView );
             mTextView_todogroupTitle = itemView.findViewById( R.id.textView_todogrouptitulo );
             mTextView_realizadas = itemView.findViewById( R.id.textView_realizado );
@@ -49,15 +60,24 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
             mLayoutManager = new LinearLayoutManager(itemView.getContext());
             mLayoutManager_checked = new LinearLayoutManager(itemView.getContext());
 
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.OnItemClick(position);
+                        }
+                    }
+                }
+            });
+
+
         }
     }
     public ExampleAdapter(ArrayList<todo_groups> listaGrupos){
         mGrupos = listaGrupos;
-        mWeakReference = new WeakReference<>(ExampleAdapter.this);
-    }
-    public static WeakReference<ExampleAdapter> mWeakReference;
-    public static ExampleAdapter getInstance(){
-        return mWeakReference.get();
     }
 
     @Override
@@ -71,15 +91,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         }
         if(mElementos_Checked.size() !=  0){ holder.mTextView_realizadas.setVisibility(View.VISIBLE);}
         if(mElementos_Checked.size() ==  0){ holder.mTextView_realizadas.setVisibility(View.GONE );}
-        // Aqui tengo que poner la madre para hacer elementos
         buildRecyclerView( holder );
-//        holder.mAdapter_rv = new Adapter_item(mElementos);
-//        holder.mRv.setLayoutManager( holder.mLayoutManager );
-//        holder.mRv.setAdapter( holder.mAdapter_rv );
-        // Lo de arriba pero con checkados
-//        holder.mAdapter_rv_checked = new Adapter_item_check(mElementos_Checked);
-//        holder.mRv_checked.setLayoutManager( holder.mLayoutManager_checked );
-//        holder.mRv_checked.setAdapter( holder.mAdapter_rv_checked );
 
 
         //TODO EVENTOS
@@ -112,7 +124,7 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     @Override
     public ExampleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
        View v = LayoutInflater.from(parent.getContext()).inflate( R.layout.example_todogroup, parent,false );
-       ExampleViewHolder evh = new ExampleViewHolder(v);
+       ExampleViewHolder evh = new ExampleViewHolder(v,mListener);
        return evh;
     }
 
