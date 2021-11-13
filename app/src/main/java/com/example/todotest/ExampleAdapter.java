@@ -4,15 +4,13 @@ package com.example.todotest;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
@@ -25,6 +23,9 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     public interface OnItemClickListener{
         void OnItemClick(int position);
+        void OnArrowClick(int position);
+        void OnCheckClick(int position);
+        void OnUncheckClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -34,40 +35,80 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
 
     public static class ExampleViewHolder extends RecyclerView.ViewHolder{
         // Por grupo
-        public TextView mTextView_todogroupTitle;
-        public ImageView mImageView_todogrouppin;
-        public CheckBox mCheckBox_estadoTodoItem;
-        public TextView mTextView_realizadas;
+        public TextView mTV_grouptitle,mTV_arrow;
+        public LinearLayout mLL_separator;
 
-        // por lista
-        private Adapter_item mAdapter_rv;
-        public RecyclerView mRv;
-        public RecyclerView.LayoutManager mLayoutManager;
-        private Adapter_item_check mAdapter_rv_checked;
-        public RecyclerView mRv_checked;
-        public RecyclerView.LayoutManager mLayoutManager_checked;
+        // para constructor
+        public RecyclerView RV_uc,RV_ch;
+        private Adapter_item AI_uc;
+        private Adapter_item_check AI_ch;
+        public RecyclerView.LayoutManager LLM_uc;
+        public RecyclerView.LayoutManager LLM_ch;
 
 
 
         public ExampleViewHolder(View itemView, OnItemClickListener listener) {
             super( itemView );
-            mTextView_todogroupTitle = itemView.findViewById( R.id.textView_todogrouptitulo );
-            mTextView_realizadas = itemView.findViewById( R.id.textView_realizado );
-            mImageView_todogrouppin = itemView.findViewById(  R.id.ImageView_todogroup_pin);
-            mCheckBox_estadoTodoItem = itemView.findViewById( R.id.checkbox_todoitem );
-            mRv = itemView.findViewById( R.id.recyclerView_todoitems );
-            mRv_checked = itemView.findViewById( R.id.recyclerView_todoitem_done );
-            mLayoutManager = new LinearLayoutManager(itemView.getContext());
-            mLayoutManager_checked = new LinearLayoutManager(itemView.getContext());
+            mLL_separator = itemView.findViewById(R.id.LL_group_lineseparator);
+            mTV_grouptitle = itemView.findViewById( R.id.tv_group_title );
+            mTV_arrow = itemView.findViewById(R.id.tv_group_arrow);
+            RV_uc = itemView.findViewById( R.id.nested_rv );
+            RV_ch = itemView.findViewById( R.id.nested_rv_done );
+            LLM_uc = new LinearLayoutManager(itemView.getContext());
+            LLM_ch = new LinearLayoutManager(itemView.getContext());
 
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            mTV_grouptitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(listener != null){
                         int position = getAdapterPosition();
                         if(position != RecyclerView.NO_POSITION){
                             listener.OnItemClick(position);
+                        }
+                    }
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.OnArrowClick(position);
+                        }
+                    }
+                }
+            });
+            mTV_arrow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.OnArrowClick(position);
+                        }
+                    }
+                }
+            });
+            RV_uc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.OnUncheckClick(position);
+                        }
+                    }
+                }
+            });
+            RV_ch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener != null){
+                        int position = getAdapterPosition();
+                        if(position != RecyclerView.NO_POSITION){
+                            listener.OnCheckClick(position);
                         }
                     }
                 }
@@ -85,38 +126,36 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         todo_groups grupoActual = mGrupos.get( position );
         mElementos = grupoActual.getListaEl_unchecked();
         mElementos_Checked = grupoActual.getListaEl_checked();
-        holder.mTextView_todogroupTitle.setText( grupoActual.getTitulo_grupo() );
-        if (grupoActual.isPinned()){
-            holder.mImageView_todogrouppin.setImageResource(R.drawable.ic_round_push_pin_24);
+        holder.mTV_grouptitle.setText( grupoActual.getTitulo_grupo() );
+        if (grupoActual.isAbierto()){
+            holder.mTV_arrow.setText(">");
+            holder.RV_uc.setVisibility(View.VISIBLE);
+            holder.RV_ch.setVisibility(View.VISIBLE);
+            if(mElementos_Checked.size() !=  0){ holder.mLL_separator.setVisibility(View.VISIBLE);}
+            if(mElementos_Checked.size() ==  0){ holder.mLL_separator.setVisibility(View.GONE );}
+        }else {
+            holder.mTV_arrow.setText("v");
+            holder.RV_uc.setVisibility(View.GONE);
+            holder.RV_ch.setVisibility(View.GONE);
+            if(mElementos_Checked.size() !=  0){ holder.mLL_separator.setVisibility(View.GONE);}
+            if(mElementos_Checked.size() ==  0){ holder.mLL_separator.setVisibility(View.GONE );}
         }
-        if(mElementos_Checked.size() !=  0){ holder.mTextView_realizadas.setVisibility(View.VISIBLE);}
-        if(mElementos_Checked.size() ==  0){ holder.mTextView_realizadas.setVisibility(View.GONE );}
-        buildRecyclerView( holder );
+        buildRecyclerView( holder , position);
 
 
         //TODO EVENTOS
     }
 
-    public void buildRecyclerView(ExampleViewHolder holder){
-        holder.mAdapter_rv = new Adapter_item(mElementos);
-        holder.mRv.setLayoutManager( holder.mLayoutManager );
-        holder.mRv.setAdapter( holder.mAdapter_rv );
-        holder.mAdapter_rv_checked = new Adapter_item_check(mElementos_Checked);
-        holder.mRv_checked.setLayoutManager( holder.mLayoutManager_checked );
-        holder.mRv_checked.setAdapter( holder.mAdapter_rv_checked );
-    }
+    public void buildRecyclerView(ExampleViewHolder holder,int groupIndex){
+        holder.AI_uc = new Adapter_item(mElementos);
+        holder.RV_uc.setLayoutManager( holder.LLM_uc);
+        holder.RV_uc.setAdapter( holder.AI_uc);
+        holder.AI_ch = new Adapter_item_check(mElementos_Checked);
+        holder.RV_ch.setLayoutManager( holder.LLM_ch);
+        holder.RV_ch.setAdapter( holder.AI_ch);
 
-    public void changeStateItem(int index,int group,boolean estado){ // TODO eventos por item
-        elemento tempel;
-        if (estado) {
-            tempel = mGrupos.get(group).getListaEl_checked().get( index );
-            mGrupos.get(group).removeitemLista_checked( index );
-            tempel.setEstado( !estado);
-            mGrupos.get( group ).additemLista_unchecked( tempel );
-
-
-        }
-
+        //holder.AI_uc.setOnItemClickListenerUC(new Adapter_item.OnItemClickListenerUC() {});
+        //holder.AI_ch.setOnItemClickListenerCH(new Adapter_item_check.OnItemClickListenerCH() {});
     }
 
 

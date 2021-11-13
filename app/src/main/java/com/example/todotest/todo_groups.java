@@ -7,14 +7,14 @@ import java.util.Comparator;
 public class todo_groups {
     private String titulo_grupo;
     private int grupo_ID;
-    private boolean pinned;
+    private boolean abierto;
     private ArrayList<elemento> mListaEl_unchecked;
     private ArrayList<elemento> mListaEl_checked;
 
     public todo_groups(String titulo_grupo, int grupo_ID, boolean pinned,ArrayList<elemento> LEU, ArrayList<elemento> LEC) {
         this.titulo_grupo = titulo_grupo;
         this.grupo_ID = grupo_ID;
-        this.pinned = pinned;
+        this.abierto = pinned;
         mListaEl_unchecked = LEU;
         mListaEl_checked = LEC;
     }
@@ -22,6 +22,7 @@ public class todo_groups {
     public todo_groups(String titulo_grupo, int grupo_ID) {
         this.titulo_grupo = titulo_grupo;
         this.grupo_ID = grupo_ID;
+        abierto = true;
         mListaEl_checked = new ArrayList<elemento>();
         mListaEl_unchecked = new ArrayList<elemento>();
     }
@@ -38,11 +39,11 @@ public class todo_groups {
     public void setGrupo_ID(int grupo_ID) {
         this.grupo_ID = grupo_ID;
     }
-    public boolean isPinned() {
-        return pinned;
+    public boolean isAbierto() {
+        return abierto;
     }
-    public void setPinned(boolean pinned) {
-        this.pinned = pinned;
+    public void setAbierto(boolean abierto) {
+        this.abierto = abierto;
     }
     public ArrayList<elemento> getListaEl_unchecked() {
         return mListaEl_unchecked;

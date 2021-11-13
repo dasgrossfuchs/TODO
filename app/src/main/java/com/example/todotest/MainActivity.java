@@ -90,6 +90,25 @@ public class MainActivity extends AppCompatActivity {
                 // EVENTO CLICK A GRUPO
                 changeItem(position,"this is new :)");
             }
+
+            @Override
+            public void OnArrowClick(int position) {
+                mListaGrupos.get(position).setAbierto(!mListaGrupos.get(position).isAbierto());
+                mAdapter_rv.notifyItemChanged(position);
+            }
+
+            @Override
+            public void OnCheckClick(int position) {
+                //mAdapter_rv.notifyItemChanged(position);
+                mAdapter_rv.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void OnUncheckClick(int position) {
+                //mAdapter_rv.notifyItemChanged(position);
+                mAdapter_rv.notifyDataSetChanged();
+            }
         });
     }
     public void changeItem(int position, String txt){

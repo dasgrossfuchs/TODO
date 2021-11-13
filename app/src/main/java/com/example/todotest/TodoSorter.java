@@ -41,8 +41,6 @@ public class TodoSorter {
             tg.setListaEl_checked( tempElList_Checked );
             tempElList_Checked = new ArrayList<elemento>();
             tempElList_UnChecked = new ArrayList<elemento>();
-//            tempElList_Checked.clear();
-//            tempElList_UnChecked.clear();
         }
 
     }
